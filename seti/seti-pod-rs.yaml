@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  name: seti-pod
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        os: "Ubuntu_14.04"
+        app: "BOINC_Client"
+        project: "setiAtHome"
+    spec:
+      containers:
+      - image: docker.io/wshoffner/kube-boinc:14.04
+        name: seti-pod
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "2000m"
+            memory: "1024Mi"
+        args: ["-attach_project", "http://setiathome.berkeley.edu/", "8091539_832f5810bc78a10f68b0fc75896c4811"]

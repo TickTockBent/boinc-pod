@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: seti-pod
+spec:
+  containers:
+  - image: docker.io/wshoffner/kube-boinc:14.04
+    name: seti-pod
+    args: ["-attach_project", "http://setiathome.berkeley.edu/", "8091539_832f5810bc78a10f68b0fc75896c4811"]

@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: seti-pods
+spec:
+  ports:
+  - port: 27000
+    name: setipodpeer
+  clusterIP: None
+  selector:
+    app: "BOINC_Client"
+    project: "setiAtHome"
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: seti-pod
+spec:
+  serviceName: seti-pods
+  selector:
+    matchLabels:
+      app: "BOINC_Client"
+      project: "setiAtHome"
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        os: "Ubuntu_14.04"
+        app: "BOINC_Client"
+        project: "setiAtHome"
+    spec:
+##      volumes:
+##      - name: "project-data"
+##        hostPath:
+##          path: "/var/lib/boinc"
+      terminationGracePeriodSeconds: 30
+      containers:
+      - image: docker.io/wshoffner/kube-boinc:14.04
+        name: seti-pod
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "1024Mi"
+##        volumeMounts:
+##        - mountPath: "/data"
+##          name: "project-data"
+        args: ["-attach_project", "http://setiathome.berkeley.edu/", "8091539_832f5810bc78a10f68b0fc75896c4811", "--fetch_minimal_work", "--abort_jobs_on_exit", "--exit_when_idle"]
